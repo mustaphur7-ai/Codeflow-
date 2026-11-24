@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gold Terminal</title><meta name="theme-color" content="#0a0d13">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><b>GOLD</b><span id="tfs"></span><span id="px"></span><button id="fs" title="Fullscreen (F)">⛶</button><div id="badge"></div></header>
+<main class="main"><div id="chart"></div><div class="legend" id="legend"></div></main>
+<nav class="tabs"><button data-tab="levels">Levels</button><button data-tab="alerts">Alerts</button><button data-tab="set">Settings</button></nav>
+<aside id="side"><section id="p-levels"></section><section id="p-alerts" hidden></section><section id="p-set" hidden></section></aside>
+<div id="alarm" hidden role="alert"><b></b><span><button data-snooze="0">Dismiss</button><button data-snooze="1">Snooze 1m</button><button data-snooze="5">5m</button><button data-snooze="15">15m</button></span></div>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="app.js"></script></body></html>

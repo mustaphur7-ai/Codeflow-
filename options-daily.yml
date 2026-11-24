@@ -1,0 +1,35 @@
+name: Options daily
+# Runs at 10:30 ET (1h after the NY open). Two UTC times cover daylight saving; the script
+# only analyses once per day inside 10:30-12:00 ET, so extra runs are harmless retries.
+on:
+  schedule:
+    - cron: '30 14 * * 1-5'
+    - cron: '45 14 * * 1-5'
+    - cron: '30 15 * * 1-5'
+    - cron: '45 15 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force a new analysis now (overwrites the frozen levels)'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: data-commit
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/options.mjs
+        env:
+          FORCE: ${{ inputs.force }}
+      - run: |
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add data
+          git diff --cached --quiet || (git commit -m "options levels" && git pull --rebase && git push)

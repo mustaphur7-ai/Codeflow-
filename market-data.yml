@@ -1,0 +1,37 @@
+name: Market data
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      test_push:
+        description: 'Send a test push notification'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: data-commit
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/market.mjs
+      - name: Alerts
+        continue-on-error: true
+        run: node scripts/alerts.mjs ${{ inputs.test_push && '--test' || '' }}
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      - name: Commit data
+        if: always()
+        run: |
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add data
+          git diff --cached --quiet || (git commit -m "data update" && git pull --rebase && git push)

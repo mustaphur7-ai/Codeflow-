@@ -1,0 +1,6 @@
+{
+  "tolerance": 0.5,
+  "alertAllFixedLevels": true,
+  "groups": { "opt": true, "gex": true, "vp": true, "sess": true },
+  "custom": []
+}
